@@ -12,6 +12,7 @@ from ai_humanizer.patterns.content import CONTENT_PATTERNS
 from ai_humanizer.patterns.language import LANGUAGE_PATTERNS
 from ai_humanizer.patterns.style import STYLE_PATTERNS
 from ai_humanizer.patterns.communication import COMMUNICATION_PATTERNS
+from ai_humanizer.patterns.webnovel import WEBNOVEL_PATTERNS
 
 
 @dataclass
@@ -35,6 +36,7 @@ class Detector:
             "language": LANGUAGE_PATTERNS,
             "style": STYLE_PATTERNS,
             "communication": COMMUNICATION_PATTERNS,
+            "webnovel": WEBNOVEL_PATTERNS,
         }
     
     def detect(self, text: str) -> Dict[str, Any]:
