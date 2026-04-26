@@ -99,9 +99,15 @@ class Rewriter:
         # 构建重写提示
         prompt = self._build_rewrite_prompt(text, patterns, tone)
         
-        # 调用 LLM 进行重写
-        # 这里需要根据实际使用的 LLM API 进行实现
-        # 示例使用 OpenAI API
+        # 检查是否有 OpenAI API Key
+        import os
+        api_key = os.environ.get("OPENAI_API_KEY")
+        
+        if not api_key:
+            # 没有 API Key，使用 fallback
+            return self._fallback_rewrite(text, patterns)
+        
+        # 有 API Key，调用 LLM 进行重写
         try:
             import openai
             
@@ -116,8 +122,8 @@ class Rewriter:
             )
             
             return response.choices[0].message.content.strip()
-        except ImportError:
-            # 如果没有安装 openai，返回提示信息
+        except Exception as e:
+            # API 调用失败，使用 fallback
             return self._fallback_rewrite(text, patterns)
     
     def _build_rewrite_prompt(
@@ -200,21 +206,54 @@ class Rewriter:
     
     def _fallback_rewrite(self, text: str, patterns: Dict[str, Any]) -> str:
         """降级重写方案（不使用 LLM）"""
-        # 简单的规则替换
         import re
         
         result = text
         
-        # 移除常见的填充词
+        # 1. 移除常见的填充词
         fillers = [
             r"此外[，,]",
             r"值得注意的是[，,]",
             r"需要指出的是[，,]",
             r"总而言之[，,]",
             r"综上所述[，,]",
+            r"毋庸置疑[，,]",
+            r"不言而喻[，,]",
         ]
         
         for filler in fillers:
             result = re.sub(filler, "", result)
+        
+        # 2. 替换 AI 常用词汇
+        ai_vocab_replacements = {
+            "关键": "重要",
+            "至关重要": "十分重要",
+            "不可或缺": "必不可少",
+            "至关重要": "极为重要",
+            "值得注意的是": "",
+            "需要强调的是": "",
+        }
+        
+        for old, new in ai_vocab_replacements.items():
+            result = result.replace(old, new)
+        
+        # 3. 替换破折号为逗号或句号
+        result = re.sub(r"——", "，", result)
+        result = re.sub(r"—", "，", result)
+        
+        # 4. 移除重复的标点
+        result = re.sub(r"[，,]{2,}", "，", result)
+        result = re.sub(r"[。.]{2,}", "。", result)
+        
+        # 5. 移除句首的连接词
+        starters = [
+            r"^然而[，,]?",
+            r"^因此[，,]?",
+            r"^所以[，,]?",
+            r"^但是[，,]?",
+        ]
+        
+        for starter in starters:
+            result = re.sub(starter, "", result, flags=re.MULTILINE)
         
         return result.strip()
