@@ -93,6 +93,27 @@ score = humanizer.score(humanized)
 print(score)
 ```
 
+## 📚 完整文档
+
+### 快速开始
+- `QUICKSTART.md` - 快速使用指南
+- `UNIVERSAL_AGENT_INTEGRATION.md` - **所有 Agent 集成指南** ⭐
+
+### Agent 集成
+- `UNIVERSAL_AGENT_INTEGRATION.md` - 通用 Agent 集成方案
+- `OPENCLAW_INTEGRATION.md` - OpenClaw 集成
+- `SKILL_SHARING_GUIDE.md` - Skill 共享指南
+
+### 集成模板
+- `templates/python/` - Python Agent 模板
+- `templates/nodejs/` - Node.js Agent 模板
+- `templates/langchain/` - LangChain Tool 模板
+- `templates/api/` - FastAPI 服务器模板
+
+### 详细文档
+- `docs/usage.md` - 详细使用说明
+- `docs/patterns.md` - 24 种 AI 写作模式详解
+
 ## AI 写作模式
 
 本工具基于维基百科的 [AI 写作特征](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) 指南，检测以下 24 种模式：
