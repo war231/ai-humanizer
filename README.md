@@ -1,6 +1,19 @@
-# AI Humanizer - AI 文本检测与人性化 Skill
+# AI Humanizer - AI 文本检测与人性化工具
 
-一个专门用于检测和去除 AI 生成文本痕迹的 **Claude Code Skill**，让文字听起来更自然、更有人味。
+一个专门用于检测和去除 AI 生成文本痕迹的工具，让文字听起来更自然、更有人味。
+
+**✨ 所有 Agent 都可以使用！**
+
+- ✅ **Claude Code** - Skill 文件自动加载
+- ✅ **OpenAI GPT-4** - CLI / API 调用
+- ✅ **Anthropic Claude** - CLI / API 调用
+- ✅ **LangChain** - Tool 集成
+- ✅ **OpenClaw** - CLI / API 调用
+- ✅ **HermesAgent** - CLI / API 调用
+- ✅ **ForgeAI v2** - 审查 Agent
+- ✅ **任何 Python Agent** - Python API
+- ✅ **任何 Node.js Agent** - CLI 调用
+- ✅ **任何其他 Agent** - CLI / API 调用
 
 ## 🎯 功能特性
 
