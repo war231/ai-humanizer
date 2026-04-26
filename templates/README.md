@@ -1,41 +1,15 @@
-# 🌐 AI Humanizer - Agent 集成模板库
+# AI Humanizer - Agent 集成模板库
 
 本目录包含各种 Agent 的集成模板，可以直接复制使用。
 
----
-
 ## 📁 模板列表
 
-### Python Agent 模板
-
-- `templates/python/basic_agent.py` - 基础 Python Agent
-- `templates/python/advanced_agent.py` - 高级 Python Agent
-- `templates/python/async_agent.py` - 异步 Python Agent
-
-### Node.js Agent 模板
-
-- `templates/nodejs/basic_agent.js` - 基础 Node.js Agent
-- `templates/nodejs/advanced_agent.js` - 高级 Node.js Agent
-
-### LangChain 模板
-
-- `templates/langchain/tool.py` - LangChain Tool
-- `templates/langchain/agent.py` - LangChain Agent
-
-### AutoGPT 模板
-
-- `templates/autogpt/plugin.py` - AutoGPT Plugin
-
-### CLI 调用模板
-
-- `templates/cli/python_cli.py` - Python CLI 调用
-- `templates/cli/nodejs_cli.js` - Node.js CLI 调用
-- `templates/cli/shell_cli.sh` - Shell CLI 调用
-
-### API 服务模板
-
-- `templates/api/fastapi_server.py` - FastAPI 服务器
-- `templates/api/flask_server.py` - Flask 服务器
+| 模板 | 说明 |
+|------|------|
+| `python/basic_agent.py` | Python Agent 模板 |
+| `nodejs/basic_agent.js` | Node.js Agent 模板 |
+| `langchain/tool.py` | LangChain Tool 模板 |
+| `api/fastapi_server.py` | FastAPI 服务器模板 |
 
 ---
 

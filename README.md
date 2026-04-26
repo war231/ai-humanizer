@@ -8,9 +8,6 @@
 - ✅ **OpenAI GPT-4** - CLI / API 调用
 - ✅ **Anthropic Claude** - CLI / API 调用
 - ✅ **LangChain** - Tool 集成
-- ✅ **OpenClaw** - CLI / API 调用
-- ✅ **HermesAgent** - CLI / API 调用
-- ✅ **ForgeAI v2** - 审查 Agent
 - ✅ **任何 Python Agent** - Python API
 - ✅ **任何 Node.js Agent** - CLI 调用
 - ✅ **任何其他 Agent** - CLI / API 调用
@@ -24,19 +21,8 @@
 
 ## 📦 安装
 
-### 作为 Skill 使用（推荐）
-
-将项目放在任意目录，Claude Code 会自动识别 `.codebuddy/skills/` 目录中的 Skill 文件。
-
 ```bash
-# 项目已包含 Skill 定义文件
-# 位置: .codebuddy/skills/ai-humanizer.md
-```
-
-### 作为 Python 包使用（可选）
-
-```bash
-pip install -r requirements.txt
+pip install -e .
 ```
 
 ## 🚀 使用方法
@@ -50,14 +36,7 @@ pip install -r requirements.txt
 [粘贴文本]
 ```
 
-或者：
-
-```
-帮我人性化重写这段文本：
-[粘贴文本]
-```
-
-### 命令行使用（可选）
+### 命令行使用
 
 ```bash
 # 检测 AI 痕迹
@@ -73,7 +52,7 @@ python -m ai_humanizer.cli score input.txt
 python -m ai_humanizer.cli batch ./documents/
 ```
 
-### Python API 使用（可选）
+### Python API 使用
 
 ```python
 from ai_humanizer import Humanizer
@@ -81,78 +60,45 @@ from ai_humanizer import Humanizer
 humanizer = Humanizer()
 
 # 检测 AI 模式
-patterns = humanizer.detect(ai_text)
-print(patterns)
+patterns = humanizer.detect(text)
 
 # 人性化重写
-humanized = humanizer.rewrite(ai_text)
-print(humanized)
+humanized = humanizer.rewrite(text)
 
 # 质量评分
 score = humanizer.score(humanized)
-print(score)
 ```
 
-## 📚 完整文档
+## 📚 文档
 
-### 快速开始
-- `QUICKSTART.md` - 快速使用指南
-- `UNIVERSAL_AGENT_INTEGRATION.md` - **所有 Agent 集成指南** ⭐
+- **Skill 文件**: `.codebuddy/skills/ai-humanizer.md` - 最完整的文档
+- **使用说明**: `docs/usage.md`
+- **AI 模式详解**: `docs/patterns.md`
+- **集成模板**: `templates/` 目录
 
-### Agent 集成
-- `UNIVERSAL_AGENT_INTEGRATION.md` - 通用 Agent 集成方案
-- `OPENCLAW_INTEGRATION.md` - OpenClaw 集成
-- `SKILL_SHARING_GUIDE.md` - Skill 共享指南
+## 🤝 Agent 集成
 
-### 集成模板
-- `templates/python/` - Python Agent 模板
-- `templates/nodejs/` - Node.js Agent 模板
-- `templates/langchain/` - LangChain Tool 模板
-- `templates/api/` - FastAPI 服务器模板
-
-### 详细文档
-- `docs/usage.md` - 详细使用说明
-- `docs/patterns.md` - 24 种 AI 写作模式详解
+| Agent 类型 | 推荐方式 | 模板 |
+|-----------|---------|------|
+| Claude Code | Skill 文件 | 自动加载 |
+| Python Agent | Python API | `templates/python/basic_agent.py` |
+| Node.js Agent | CLI 调用 | `templates/nodejs/basic_agent.js` |
+| LangChain | Tool | `templates/langchain/tool.py` |
+| REST API | FastAPI | `templates/api/fastapi_server.py` |
 
 ## AI 写作模式
 
-本工具基于维基百科的 [AI 写作特征](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) 指南，检测以下 24 种模式：
+本工具基于维基百科的 [AI 写作特征](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing) 指南，检测 24 种模式：
 
-### 内容模式
-1. 过度强调意义和遗产
-2. 过度强调知名度和媒体报道
-3. 以 -ing 结尾的肤浅分析
-4. 宣传和广告式语言
-5. 模糊归因和含糊措辞
-6. 提纲式的"挑战与未来展望"
+**内容模式**：过度强调意义、过度强调知名度、肤浅分析、宣传性语言、模糊归因、公式化展望
 
-### 语言模式
-7. 过度使用的"AI 词汇"
-8. 避免使用"是"（系动词回避）
-9. 否定式排比
-10. 三段式法则过度使用
-11. 刻意换词（同义词循环）
-12. 虚假范围
+**语言模式**：AI 词汇、系动词回避、否定式排比、三段式法则、同义词循环、虚假范围
 
-### 风格模式
-13. 破折号过度使用
-14. 粗体过度使用
-15. 内联标题垂直列表
-16. 标题中的标题大写
-17. 表情符号
-18. 弯引号
+**风格模式**：破折号过度使用、粗体过度使用、内联标题列表、标题大写、表情符号、弯引号
 
-### 交流模式
-19. 协作交流痕迹
-20. 知识截止日期免责声明
-21. 谄媚/卑躬屈膝的语气
+**交流模式**：协作痕迹、知识截止声明、谄媚语气、填充短语、过度限定、通用积极结论
 
-### 填充词和回避
-22. 填充短语
-23. 过度限定
-24. 通用积极结论
-
-## 质量评分维度
+## 质量评分
 
 | 维度 | 评估标准 |
 |------|----------|
@@ -162,83 +108,32 @@ print(score)
 | **真实性** | 听起来像真人说话吗？ |
 | **精炼度** | 还有可删减的内容吗？ |
 
-总分 50 分，45-50 分为优秀，35-44 分为良好，低于 35 分需要重新修订。
+总分 50 分：45-50 优秀，35-44 良好，<35 需修订
+
+## 💡 最佳实践
+
+1. **先检测后重写** - 了解文本中有哪些 AI 模式
+2. **保留核心信息** - 重写时确保不丢失关键内容
+3. **人工审核** - 重写后仍需人工审核
+4. **多次迭代** - 可能需要多次重写才能达到理想效果
+5. **结合上下文** - 考虑文本的使用场景和目标受众
 
 ## 📁 项目结构
 
 ```
 ai-humanizer/
-├── .codebuddy/
-│   └── skills/
-│       └── ai-humanizer.md    # ⭐ Skill 定义文件（主要）
-├── ai_humanizer/              # Python 核心模块（可选）
-│   ├── __init__.py
-│   ├── detector.py            # AI 模式检测器
-│   ├── rewriter.py            # 人性化重写器
-│   ├── scorer.py              # 质量评分器
-│   ├── cli.py                 # 命令行工具
-│   └── patterns/              # 模式定义
-│       ├── content.py         # 内容模式
-│       ├── language.py        # 语言模式
-│       ├── style.py           # 风格模式
-│       └── communication.py   # 交流模式
-├── tests/                     # 测试用例
-├── examples/                  # 示例文档
-├── docs/                      # 文档
-├── requirements.txt           # 依赖
-├── pyproject.toml            # 项目配置
-└── README.md
-```
-
-## 💡 Skill 使用示例
-
-### 示例 1：检测 AI 痕迹
-
-**用户输入：**
-```
-请检测这段文本中的 AI 痕迹：
-新的软件更新作为公司致力于创新的证明。此外，它提供了无缝、直观和强大的用户体验——确保用户能够高效地完成目标。
-```
-
-**Skill 输出：**
-```
-检测结果：
-- 过度强调意义和遗产（"作为...的证明"）
-- AI 词汇（"此外"）
-- 三段式法则（"无缝、直观和强大"）
-- 宣传性语言（"无缝、直观和强大"）
-- 肤浅分析（"—确保..."）
-
-质量评分：28/50（需改进）
-```
-
-### 示例 2：人性化重写
-
-**用户输入：**
-```
-请人性化重写这段文本：
-新的软件更新作为公司致力于创新的证明。此外，它提供了无缝、直观和强大的用户体验——确保用户能够高效地完成目标。
-```
-
-**Skill 输出：**
-```
-软件更新添加了批处理、键盘快捷键和离线模式。来自测试用户的早期反馈是积极的，大多数报告任务完成速度更快。
-
-质量评分：45/50（优秀）
-
-所做更改：
-- 删除了"作为...的证明"（夸大的象征意义）
-- 删除了"此外"（AI 词汇）
-- 删除了"无缝、直观和强大"（三段式法则 + 宣传性）
-- 添加了具体功能和具体反馈
+├── .codebuddy/skills/ai-humanizer.md  # ⭐ Skill 定义文件
+├── ai_humanizer/                      # Python 核心模块
+├── templates/                         # Agent 集成模板
+├── docs/                              # 文档
+├── examples/                          # 示例
+└── tests/                             # 测试
 ```
 
 ## 参考
 
 - [Wikipedia: Signs of AI writing](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing)
 - [WikiProject AI Cleanup](https://en.wikipedia.org/wiki/Wikipedia:WikiProject_AI_Cleanup)
-- 翻译自 [blader/humanizer](https://github.com/blader/humanizer)
-- 参考 [hardikpandya/stop-slop](https://github.com/hardikpandya/stop-slop)
 
 ## 许可证
 

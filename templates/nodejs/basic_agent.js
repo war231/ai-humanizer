@@ -13,9 +13,9 @@ class BasicHumanizerAgent {
      * 初始化 Agent
      * @param {string} humanizerPath - AI Humanizer 项目路径
      */
-    constructor(humanizerPath = 'e:/xiangmu/ai-humanizer') {
+    constructor(humanizerPath = '.') {
         this.humanizerPath = humanizerPath;
-        this.tempDir = '/tmp/ai-humanizer';
+        this.tempDir = require('os').tmpdir();
 
         // 创建临时目录
         if (!fs.existsSync(this.tempDir)) {
