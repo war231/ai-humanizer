@@ -74,12 +74,13 @@ class Scorer:
         },
     }
     
-    def score(self, text: str) -> Dict[str, Any]:
+    def score(self, text: str, patterns: Dict[str, Any] = None) -> Dict[str, Any]:
         """
         评估文本人性化程度
         
         Args:
             text: 待评估的文本
+            patterns: 检测到的 AI 模式（可选），传入后会更精准地评分
             
         Returns:
             评分结果字典
@@ -88,7 +89,7 @@ class Scorer:
         total_score = 0
         
         for dim_id, dim_data in self.DIMENSIONS.items():
-            dim_score = self._evaluate_dimension(text, dim_id)
+            dim_score = self._evaluate_dimension(text, dim_id, patterns)
             total_score += dim_score
             
             dimensions.append(
@@ -128,7 +129,7 @@ class Scorer:
             ],
         }
     
-    def _evaluate_dimension(self, text: str, dimension: str) -> int:
+    def _evaluate_dimension(self, text: str, dimension: str, patterns: Dict[str, Any] = None) -> int:
         """
         评估单个维度
         
@@ -142,6 +143,15 @@ class Scorer:
             fillers = ["此外", "值得注意的是", "需要指出的是", "总而言之"]
             filler_count = sum(1 for f in fillers if f in text)
             score = max(1, 10 - filler_count * 2)
+            
+            # 如果检测到 communication 模式，额外扣分
+            if patterns and patterns.get("details"):
+                comm_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.category == "communication"
+                )
+                score = max(1, score - comm_matches * 2)
         
         elif dimension == "rhythm":
             # 检查句子长度变化
@@ -153,24 +163,79 @@ class Scorer:
                 avg_length = sum(lengths) / len(lengths)
                 variance = sum((l - avg_length) ** 2 for l in lengths) / len(lengths)
                 score = min(10, int(5 + variance / 50))
+            
+            # 如果检测到 style 模式，额外扣分
+            if patterns and patterns.get("details"):
+                style_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.category == "style"
+                )
+                score = max(1, score - style_matches * 2)
         
         elif dimension == "trust":
             # 检查过度解释
             explanations = ["也就是说", "换句话说", "这意味着", "这表明"]
             exp_count = sum(1 for e in explanations if e in text)
             score = max(1, 10 - exp_count * 2)
+            
+            # 如果检测到 content 或 communication 模式，额外扣分
+            if patterns and patterns.get("details"):
+                trust_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.category in ["content", "communication"]
+                )
+                # 网文信息堆砌扣分更重
+                info_dump_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.pattern_id == "info_dump"
+                )
+                score = max(1, score - trust_matches * 2 - info_dump_matches * 2)
         
         elif dimension == "authenticity":
             # 检查 AI 词汇
             ai_words = ["至关重要", "不可或缺", "充满活力", "深刻体现"]
             ai_count = sum(1 for w in ai_words if w in text)
             score = max(1, 10 - ai_count * 2)
+            
+            # 如果检测到 language 或 webnovel 模式，额外扣分
+            if patterns and patterns.get("details"):
+                # 通用 language 模式
+                lang_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.category == "language"
+                )
+                # 网文专属模式扣分更重
+                webnovel_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.category == "webnovel"
+                )
+                score = max(1, score - lang_matches * 2 - webnovel_matches * 3)
         
         elif dimension == "conciseness":
             # 检查冗余表达
             redundancies = ["进行", "实施", "开展", "作出"]
             red_count = sum(1 for r in redundancies if r in text)
             score = max(1, 10 - red_count)
+            
+            # 如果检测到 content 或 style 模式，额外扣分
+            if patterns and patterns.get("details"):
+                conc_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.category in ["content", "style"]
+                )
+                # 网文重复性描写扣分
+                rep_matches = sum(
+                    len(d.matches) 
+                    for d in patterns["details"] 
+                    if d.pattern_id == "repetitive_descriptions"
+                )
+                score = max(1, score - conc_matches - rep_matches * 2)
         
         return score
     

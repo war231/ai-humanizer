@@ -62,7 +62,9 @@ class Humanizer:
         Returns:
             评分结果字典，包含各维度得分和总分
         """
-        return self.scorer.score(text)
+        # 先检测 AI 模式，再将结果传给评分器
+        patterns = self.detector.detect(text)
+        return self.scorer.score(text, patterns)
 
 
 __all__ = ["Humanizer", "Detector", "Rewriter", "Scorer"]
