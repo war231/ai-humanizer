@@ -65,4 +65,22 @@ WEBNOVEL_PATTERNS = {
         "description": "AI 生成的对话过于套路化",
         "suggestion": "让对话更自然，符合人物性格",
     },
+    "parallel_structure": {
+        "name": "排比/对称结构",
+        "regex": r"([\u4e00-\u9fa5]{2,4}[，；].*?[\u4e00-\u9fa5]{2,4}[，；].*?[\u4e00-\u9fa5]{2,4}[，；])|([\u4e00-\u9fa5]{2}而[\u4e00-\u9fa5]{2})",
+        "description": "AI 喜欢使用工整的排比和对称结构",
+        "suggestion": "打破对称，用具体细节代替概括性排比",
+    },
+    "missing_life_details": {
+        "name": "缺少生活化细节",
+        "regex": r"(回到.*(?:直接|立刻|马上|随即|立刻就).*?)|(?:坐在.*?(?:直接|立刻|马上))",
+        "description": "场景切换或情绪转变缺少生活化的过渡细节",
+        "suggestion": "加入身体动作、环境反应、下意识行为等过渡",
+    },
+    "classical_dialogue_template": {
+        "name": "标准化古文对话",
+        "regex": r"(吾乃|吾便|吾辈|尔等|汝|足矣|罢了|不必多礼|晚辈|前辈|敢问|造化|有缘之人|静待)",
+        "description": "AI 生成的古文对话过于标准模板化，缺乏个性",
+        "suggestion": "给角色设计独特的说话方式，可以带点口语、口头禅",
+    },
 }
