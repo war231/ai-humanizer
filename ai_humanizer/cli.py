@@ -86,7 +86,7 @@ def detect(file: str, format: str):
 @main.command()
 @click.argument("file", type=click.Path(exists=True))
 @click.option("-o", "--output", type=click.Path(), help="输出文件路径")
-@click.option("-t", "--tone", type=click.Choice(["neutral", "formal", "casual", "technical"]), default="neutral", help="目标语调")
+@click.option("-t", "--tone", type=click.Choice(["neutral", "formal", "casual", "technical", "xuanhuan", "urban", "romance", "system"]), default="neutral", help="目标语调")
 def rewrite(file: str, output: str, tone: str):
     """人性化重写文件"""
     humanizer = Humanizer()
@@ -154,6 +154,45 @@ def score(file: str, format: str):
             )
         
         console.print(table)
+
+
+@main.command()
+@click.argument("directory", type=click.Path(exists=True))
+@click.option("-t", "--tone", type=click.Choice(["neutral", "formal", "casual", "technical", "xuanhuan", "urban", "romance", "system"]), default="neutral", help="目标语调")
+@click.option("--output", type=click.Path(), help="输出目录")
+@click.option("--preserve-context", is_flag=True, default=True, help="保持人物设定一致性")
+def novel(directory: str, tone: str, output: str, preserve_context: bool):
+    """批量处理网文章节（保持人物设定一致性）"""
+    from ai_humanizer.batch import BatchProcessor
+    
+    processor = BatchProcessor()
+    
+    # 加载章节
+    count = processor.load_chapters(directory)
+    console.print(f"[yellow]加载了 {count} 个章节[/yellow]")
+    
+    # 创建输出目录
+    if output:
+        from pathlib import Path
+        output_path = Path(output)
+        output_path.mkdir(parents=True, exist_ok=True)
+    
+    # 批量处理
+    console.print("[yellow]正在批量处理章节...[/yellow]")
+    results = processor.process_all(
+        tone=tone,
+        preserve_context=preserve_context,
+        output_dir=output
+    )
+    
+    # 显示统计
+    stats = processor.get_statistics()
+    console.print(f"\n[green]✅ 处理完成！[/green]")
+    console.print(f"  总章节数: {stats['total_chapters']}")
+    console.print(f"  人物数量: {stats['total_characters']}")
+    
+    if output:
+        console.print(f"  输出目录: {output}")
 
 
 @main.command()
