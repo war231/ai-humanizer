@@ -256,63 +256,61 @@ class Rewriter:
             result = re.sub(starter, "", result, flags=re.MULTILINE)
         
         # 6. 网文专属：替换套路化描写
-        webnovel_replacements = {
-            # 套路化开头
-            "夕阳如血": "夕阳把天边烧得通红",
-            "夕阳西沉": "太阳落山了",
-            "夕阳西下": "天快黑了",
-            
-            # 套路化过渡
-            "刹那间": "突然",
-            "说时迟那时快": "",
-            "就在此时": "这时",
-            "正在这时": "",
-            "千钧一发之际": "危急时刻",
-            "电光火石之间": "一瞬间",
-            "眨眼间": "很快",
-            "转瞬间": "",
-            
-            # 重复性心理描写
-            "心中震撼": "愣住了",
-            "心中狂喜": "差点叫出声",
-            "心中一震": "一惊",
-            "心中一凛": "警觉起来",
-            "心中一沉": "感觉不妙",
-            "心中振奋": "精神一振",
-            
-            # 重复性表情描写
-            "嘴角勾起一抹": "",
-            "嘴角微微上扬": "笑了笑",
-            "嘴角露出一丝": "",
-            "眼中闪过一丝": "",
-            "目光一凝": "盯着",
-            "眉头微皱": "皱起眉头",
-            
-            # 信息堆砌
-            "要知道": "",
-            "须知": "",
-            "值得一提的是": "",
-            "众所周知": "",
-            
-            # 套路化结尾
-            "命运的齿轮": "",
-            "新的篇章": "",
-            "传奇就此展开": "",
-            "序幕正式拉开": "",
-            "即将开始": "",
-            "由此展开": "",
-            
-            # 套路化对话
-            "晚辈": "我",
-            "敢问前辈": "请问",
-            "吾乃": "我是",
-            "吾便": "我就",
-            "吾看好你": "我看好你",
-            "小子": "",
-        }
         
-        for old, new in webnovel_replacements.items():
-            result = result.replace(old, new)
+        # 套路化开头
+        result = result.replace("夕阳如血", "夕阳把天边烧得通红")
+        result = result.replace("夕阳西沉", "太阳落山了")
+        result = result.replace("夕阳西下", "天快黑了")
+        
+        # 套路化过渡
+        result = result.replace("刹那间", "突然")
+        result = re.sub(r"说时迟那时快[，,]?", "", result)
+        result = result.replace("就在此时", "这时")
+        result = re.sub(r"正在这时[，,]?", "", result)
+        result = result.replace("千钧一发之际", "危急时刻")
+        result = result.replace("电光火石之间", "一瞬间")
+        result = result.replace("眨眼间", "很快")
+        result = re.sub(r"转瞬间[，,]?", "", result)
+        
+        # 重复性心理描写
+        result = result.replace("心中震撼", "愣住了")
+        result = result.replace("心中狂喜", "差点叫出声")
+        result = result.replace("心中一震", "一惊")
+        result = result.replace("心中一凛", "警觉起来")
+        result = result.replace("心中一沉", "感觉不妙")
+        result = result.replace("心中振奋", "精神一振")
+        
+        # 重复性表情描写 - 用正则保留后面的内容
+        result = re.sub(r"嘴角勾起一抹(.+?)(?=[，。！？\n])", r"露出\1", result)
+        result = result.replace("嘴角微微上扬", "笑了笑")
+        result = re.sub(r"嘴角露出一丝(.+?)(?=[，。！？\n])", r"露出\1", result)
+        result = result.replace("眼中闪过一丝冷芒", "目光一冷")
+        result = re.sub(r"眼中闪过一丝(.+?)(?=[，。！？\n])", r"面露\1", result)
+        result = result.replace("目光一凝", "盯着")
+        result = result.replace("眉头微皱", "皱起眉头")
+        
+        # 信息堆砌 - 连带删除后面的逗号
+        result = re.sub(r"要知道[，,]", "", result)
+        result = re.sub(r"要知道(?=[，。！？\n])", "", result)
+        result = re.sub(r"须知[，,]", "", result)
+        result = re.sub(r"值得一提的是[，,]", "", result)
+        result = re.sub(r"众所周知[，,]", "", result)
+        
+        # 套路化结尾 - 连带删除前面的逗号和后面的内容
+        result = re.sub(r"[，,]?命运的齿轮.+?(?=[\n]|$)", "", result)
+        result = re.sub(r"[，,]?新的篇章.+?(?=[\n]|$)", "", result)
+        result = re.sub(r"[，,]?传奇就此展开[。.]?", "。", result)
+        result = re.sub(r"[，,]?序幕正式拉开[。.]?", "。", result)
+        result = re.sub(r"[，,]?即将开始[。.]?", "。", result)
+        result = re.sub(r"[，,]?由此展开[。.]?", "。", result)
+        
+        # 套路化对话
+        result = result.replace("晚辈", "我")
+        result = result.replace("敢问前辈", "请问")
+        result = result.replace("吾乃", "我是")
+        result = result.replace("吾便", "我就")
+        result = result.replace("吾看好你", "我看好你")
+        result = re.sub(r"小子[，,]", "", result)
         
         # 7. 网文专属：简化过于正式的对话
         # "晚辈林风，敢问前辈是何人？这是何地？" → "你是谁？这是哪儿？"
@@ -321,8 +319,8 @@ class Rewriter:
         result = re.sub(r"吾乃([\w\u4e00-\u9fa5]+)[，,]", r"我是\1，", result)
         result = re.sub(r"吾便送你", "送你", result)
         
-        # 8. 清理"小子"等称呼（保留在对话中，删除旁白中的）
-        result = re.sub(r"^(?!.*[\"']).*小子", "", result, flags=re.MULTILINE)
+        # 8. 清理残留的"小子"（不在对话中的）
+        result = re.sub(r"(?<![\"'])小子", "", result)
         
         # 9. 清理多余空格和空行
         result = re.sub(r"\n{3,}", "\n\n", result)
