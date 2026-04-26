@@ -5,6 +5,7 @@
 **✨ 所有 Agent 都可以使用！**
 
 - ✅ **Claude Code** - Skill 文件自动加载
+- ✅ **OpenClaw** - CLI 调用
 - ✅ **OpenAI GPT-4** - CLI / API 调用
 - ✅ **Anthropic Claude** - CLI / API 调用
 - ✅ **LangChain** - Tool 集成
@@ -78,9 +79,57 @@ score = humanizer.score(humanized)
 
 ## 🤝 Agent 集成
 
+### OpenClaw 集成
+
+**安装 OpenClaw：**
+
+```bash
+# macOS / Linux
+curl -fsSL https://openclaw.ai/install.sh | bash
+
+# Windows (PowerShell)
+iwr -useb https://openclaw.ai/install.ps1 | iex
+```
+
+**OpenClaw 调用 AI Humanizer：**
+
+```bash
+# 检测 AI 模式
+python -m ai_humanizer.cli detect input.txt --format json
+
+# 人性化重写
+python -m ai_humanizer.cli rewrite input.txt -o output.txt --format json
+
+# 质量评分
+python -m ai_humanizer.cli score input.txt --format json
+
+# 批量处理
+python -m ai_humanizer.cli batch ./documents/ --format json
+```
+
+**Python 调用示例：**
+
+```python
+import subprocess
+import json
+
+def humanizer_detect(text: str) -> dict:
+    """OpenClaw 调用 AI Humanizer 检测"""
+    result = subprocess.run(
+        ["python", "-m", "ai_humanizer.cli", "detect", "-", "--format", "json"],
+        input=text,
+        capture_output=True,
+        text=True
+    )
+    return json.loads(result.stdout)
+```
+
+### 其他 Agent 集成
+
 | Agent 类型 | 推荐方式 | 模板 |
 |-----------|---------|------|
 | Claude Code | Skill 文件 | 自动加载 |
+| OpenClaw | CLI 调用 | `--format json` |
 | Python Agent | Python API | `templates/python/basic_agent.py` |
 | Node.js Agent | CLI 调用 | `templates/nodejs/basic_agent.js` |
 | LangChain | Tool | `templates/langchain/tool.py` |
